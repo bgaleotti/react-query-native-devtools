@@ -16,7 +16,7 @@ export function addPlugin(queryCache: QueryCache) {
   }
 
   addFlipperPlugin({
-    getId: () => 'flipper-plugin-react-query-devtools',
+    getId: () => 'flipper-plugin-react-query-native-devtools',
     onConnect(connection) {
       unsubscribe = queryCache.subscribe(() => {
         connection.send('queries', getQueries());
