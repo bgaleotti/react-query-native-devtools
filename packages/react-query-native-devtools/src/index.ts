@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { addPlugin as addFlipperPlugin } from 'react-native-flipper';
 import { CachedQuery, QueryCache } from 'react-query';
 
