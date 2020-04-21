@@ -26,7 +26,7 @@ export function addPlugin(queryCache: QueryCache) {
         responder.success();
       });
       connection.receive('query:remove', (queryHash, responder) => {
-        queryCache.removeQueries(query => query.queryHash === queryHash);
+        queryCache.removeQueries((query) => query.queryHash === queryHash);
         responder.success();
       });
 
