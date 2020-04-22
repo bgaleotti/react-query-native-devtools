@@ -1,8 +1,4 @@
 {
-  "include": [
-    "src",
-    "types"
-  ],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
@@ -18,9 +14,10 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
-      "*": ["src/*", "node_modules/*"]
+      "*": ["src/*"]
     },
     "jsx": "react",
     "esModuleInterop": true
-  }
+  },
+  "include": ["src"]
 }

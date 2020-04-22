@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { addPlugin as addFlipperPlugin } from 'react-native-flipper';
 import { CachedQuery, QueryCache } from 'react-query';
 
@@ -16,7 +15,7 @@ export function addPlugin(queryCache: QueryCache) {
   }
 
   addFlipperPlugin({
-    getId: () => 'flipper-plugin-react-query-devtools',
+    getId: () => 'flipper-plugin-react-query-native-devtools',
     onConnect(connection) {
       unsubscribe = queryCache.subscribe(() => {
         connection.send('queries', getQueries());
@@ -27,7 +26,7 @@ export function addPlugin(queryCache: QueryCache) {
         responder.success();
       });
       connection.receive('query:remove', (queryHash, responder) => {
-        queryCache.removeQueries(query => query.queryHash === queryHash);
+        queryCache.removeQueries((query) => query.queryHash === queryHash);
         responder.success();
       });
 
