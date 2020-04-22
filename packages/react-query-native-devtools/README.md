@@ -7,7 +7,7 @@ Flipper devtools for [React Query](https://github.com/tannerlinsley/react-query)
 ```bash
 $ npm i --save-dev react-query-native-devtools react-native-flipper
 # or
-$ yarn add --dev react-query-devtools react-native-flipper
+$ yarn add --dev react-query-native-devtools react-native-flipper
 ```
 
 ## Usage
