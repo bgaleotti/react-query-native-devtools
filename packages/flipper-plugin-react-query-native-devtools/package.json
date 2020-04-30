@@ -3,7 +3,7 @@
   "name": "flipper-plugin-react-query-native-devtools",
   "id": "flipper-plugin-react-query-native-devtools",
   "description": "Inspect React Query cache with Flipper",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "main": "dist/bundle.js",
   "flipperBundlerEntry": "src/index.tsx",
   "author": "Bruno Galeotti",
