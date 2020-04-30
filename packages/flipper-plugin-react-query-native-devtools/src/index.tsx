@@ -1,5 +1,4 @@
-import { colors, FlexRow, styled } from 'flipper';
-import { createFlipperPlugin, useFlipper } from 'flipper-hooks';
+import { colors, FlexRow, FlipperPlugin, PluginClient, styled } from 'flipper';
 import React, { FunctionComponent, useState } from 'react';
 
 import QueryTable from './components/query-table';
@@ -19,12 +18,16 @@ type PersistedState = {
   queries: Query[];
 };
 
-const ReactQueryDevtools: FunctionComponent = () => {
-  const { client, persistedState } = useFlipper();
+type ReactQueryDevtoolsProps = {
+  client: PluginClient;
+  persistedState: PersistedState;
+};
+
+const ReactQueryDevtools: FunctionComponent<ReactQueryDevtoolsProps> = ({ client, persistedState }) => {
   const { queries } = persistedState;
   const [selectedQueries, setSelectedQueries] = useState<string[]>([]);
   const selectedQuery = selectedQueries.length === 1 ? selectedQueries[0] : null;
-  const query = selectedQuery ? queries.find((query: Query): boolean => query.queryHash === selectedQuery) : null;
+  const query = queries.find((query: Query): boolean => query.queryHash === selectedQuery);
 
   const onQueryRefetch = (query: Query): void => {
     client.call('query:refetch', query.queryHash);
@@ -42,24 +45,24 @@ const ReactQueryDevtools: FunctionComponent = () => {
   );
 };
 
-export default createFlipperPlugin<{}, PersistedState>(
-  'flipper-plugin-react-query-native-devtools',
-  ReactQueryDevtools,
-  {
-    title: 'React Query Devtools',
-    icon: 'app-react',
-    defaultPersistedState: {
-      queries: [],
-    },
-    persistedStateReducer: (persistedState: PersistedState, method: string, queries: Query[]): PersistedState => {
-      if (method === 'queries') {
-        return {
-          ...persistedState,
-          queries,
-        };
-      }
+export default class ReactQueryDevtoolsFlipperPlugin extends FlipperPlugin<{}, any, PersistedState> {
+  static title = 'React Query Devtools';
+  static icon = 'app-react';
+  static defaultPersistedState = {
+    queries: [],
+  };
+  static persistedStateReducer(persistedState: PersistedState, method: string, queries: Query[]): PersistedState {
+    if (method === 'queries') {
+      return {
+        ...persistedState,
+        queries,
+      };
+    }
 
-      return persistedState;
-    },
-  },
-);
+    return persistedState;
+  }
+
+  render() {
+    return <ReactQueryDevtools client={this.client} persistedState={this.props.persistedState} />;
+  }
+}

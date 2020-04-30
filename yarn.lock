@@ -4675,13 +4675,6 @@ flipper-doctor@0.37.0:
     envinfo "^7.4.0"
     fb-watchman "^2.0.1"
 
-flipper-hooks@^0.1.2:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/flipper-hooks/-/flipper-hooks-0.1.4.tgz#0950081cb29a8d1307db29e7a91a6fe4764899a2"
-  integrity sha512-eR1iN0dtDAUBn+/d1/4i/9KmIgRxhd7ww9UUNg8u9YPirsusy9kpoe/UWsNeHEnXgpE/HAqF4CF590v17+jeXg==
-  dependencies:
-    flipper "^0.37.0"
-
 flipper@^0.37.0:
   version "0.37.0"
   resolved "https://registry.yarnpkg.com/flipper/-/flipper-0.37.0.tgz#222c72b1cc84df3ad7810f100a8f4331d52b0cab"

@@ -1,13 +1,14 @@
 {
   "name": "flipper-plugin-react-query-native-devtools",
   "description": "Inspect React Query cache with Flipper",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "main": "src/index.tsx",
   "author": "Bruno Galeotti",
   "license": "MIT",
   "keywords": [
     "flipper-plugin"
   ],
+  "repository": "https://github.com/bgaleotti/react-query-native-devtools/",
   "scripts": {
     "build": "true",
     "lint": "eslint --ignore-path .eslintignore './src/**/*.{js,ts,tsx}' --quiet",
@@ -18,7 +19,6 @@
   },
   "dependencies": {
     "flipper": "^0.37.0",
-    "flipper-hooks": "^0.1.2",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
