@@ -30,11 +30,11 @@ const ReactQueryDevtools: FunctionComponent<ReactQueryDevtoolsProps> = ({ client
   const query = queries.find((query: Query): boolean => query.queryHash === selectedQuery);
 
   const onQueryRefetch = (query: Query): void => {
-    client.call('query:refetch', query.queryHash);
+    client.call('query:refetch', { queryHash: query.queryHash });
   };
 
   const onQueryRemove = (query: Query): void => {
-    client.call('query:remove', query.queryHash);
+    client.call('query:remove', { queryHash: query.queryHash });
   };
 
   return (
