@@ -21,11 +21,11 @@ export function addPlugin(queryCache: QueryCache) {
         connection.send('queries', getQueries());
       });
 
-      connection.receive('query:refetch', (queryHash, responder) => {
+      connection.receive('query:refetch', ({ queryHash }, responder) => {
         getQueryByHash(queryHash)?.fetch();
         responder.success();
       });
-      connection.receive('query:remove', (queryHash, responder) => {
+      connection.receive('query:remove', ({ queryHash }, responder) => {
         queryCache.removeQueries((query) => query.queryHash === queryHash);
         responder.success();
       });
