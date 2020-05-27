@@ -1,6 +1,16 @@
 import { addPlugin as addFlipperPlugin } from 'react-native-flipper';
 import { CachedQuery, QueryCache } from 'react-query';
 
+type SerializableQuery = Omit<CachedQuery, 'cache'>;
+
+function transformQueryToSerializableQuery(
+  query: CachedQuery
+): SerializableQuery {
+  const { cache, ...rest } = query;
+
+  return rest;
+}
+
 export function addPlugin(queryCache: QueryCache) {
   let unsubscribe: (() => void) | undefined;
 
@@ -18,7 +28,10 @@ export function addPlugin(queryCache: QueryCache) {
     getId: () => 'flipper-plugin-react-query-native-devtools',
     onConnect(connection) {
       unsubscribe = queryCache.subscribe(() => {
-        connection.send('queries', getQueries());
+        connection.send(
+          'queries',
+          getQueries().map(transformQueryToSerializableQuery)
+        );
       });
 
       connection.receive('query:refetch', ({ queryHash }, responder) => {
@@ -31,7 +44,10 @@ export function addPlugin(queryCache: QueryCache) {
       });
 
       // send initial queries
-      connection.send('queries', getQueries());
+      connection.send(
+        'queries',
+        getQueries().map(transformQueryToSerializableQuery)
+      );
     },
     onDisconnect() {
       if (unsubscribe) {
