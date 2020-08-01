@@ -1,27 +1,40 @@
 import { addPlugin as addFlipperPlugin } from 'react-native-flipper';
 import { CachedQuery, QueryCache } from 'react-query';
 
-type SerializableQuery = Omit<CachedQuery, 'cache'>;
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+
+  return (_: unknown, value: unknown) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+
+      seen.add(value);
+    }
+
+    return value;
+  };
+};
+
+type SerializableQuery = Partial<CachedQuery<unknown>>;
 
 function transformQueryToSerializableQuery(
-  query: CachedQuery
+  query: CachedQuery<unknown>
 ): SerializableQuery {
-  const { cache, ...rest } = query;
-
-  return rest;
+  return JSON.parse(JSON.stringify(query, getCircularReplacer()));
 }
 
 export function addPlugin(queryCache: QueryCache) {
   let unsubscribe: (() => void) | undefined;
 
-  function getQueries(): CachedQuery[] {
+  function getQueries() {
     return queryCache.getQueries(() => true);
   }
 
-  function getQueryByHash(queryHash: string): CachedQuery | undefined {
-    return queryCache.getQueries(
-      (query: CachedQuery) => query.queryHash === queryHash
-    )[0];
+  function getQueryByHash(queryHash: string): CachedQuery<unknown> {
+    // @ts-ignore
+    return queryCache.getQueries((query) => query.queryHash === queryHash)[0];
   }
 
   addFlipperPlugin({
@@ -35,10 +48,12 @@ export function addPlugin(queryCache: QueryCache) {
       });
 
       connection.receive('query:refetch', ({ queryHash }, responder) => {
+        // @ts-ignore
         getQueryByHash(queryHash)?.fetch();
         responder.success();
       });
       connection.receive('query:remove', ({ queryHash }, responder) => {
+        // @ts-ignore
         queryCache.removeQueries((query) => query.queryHash === queryHash);
         responder.success();
       });
