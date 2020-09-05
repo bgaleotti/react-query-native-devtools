@@ -19,7 +19,7 @@ export function formatTimestamp(timestamp: number): string {
 export function getQueryStatusLabel(query: Query): string {
   return query.state.isFetching
     ? 'fetching'
-    : !query.instances.length
+    : !query?.instances?.length || !query?.observers?.length
     ? 'inactive'
     : query.state.isStale
     ? 'stale'
