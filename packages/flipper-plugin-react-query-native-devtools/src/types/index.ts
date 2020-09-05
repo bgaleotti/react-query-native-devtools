@@ -10,7 +10,8 @@ export type Query = {
     suspense: boolean;
     throwOnError: boolean;
   };
-  instances: string[];
+  instances?: unknown[];
+  observers?: unknown[];
   queryHash: string;
   queryKey: string[];
   queryVariables: unknown[];
