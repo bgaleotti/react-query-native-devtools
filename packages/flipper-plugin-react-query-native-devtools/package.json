@@ -3,7 +3,7 @@
   "name": "flipper-plugin-react-query-native-devtools",
   "id": "flipper-plugin-react-query-native-devtools",
   "description": "Inspect React Query cache with Flipper",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "main": "dist/bundle.js",
   "flipperBundlerEntry": "src/index.tsx",
   "author": "Bruno Galeotti",
@@ -22,6 +22,7 @@
     "prepack": "flipper-pkg lint && flipper-pkg bundle"
   },
   "dependencies": {
+    "flatted": "^3.0.4",
     "lodash": "^4.17.15"
   },
   "peerDependencies": {
