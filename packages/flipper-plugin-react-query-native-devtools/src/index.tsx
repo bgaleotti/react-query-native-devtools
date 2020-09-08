@@ -1,3 +1,4 @@
+import { parse } from 'flatted';
 import { colors, FlexRow, FlipperPlugin, PluginClient, styled } from 'flipper';
 import React, { FunctionComponent, useState } from 'react';
 
@@ -45,17 +46,21 @@ const ReactQueryDevtools: FunctionComponent<ReactQueryDevtoolsProps> = ({ client
   );
 };
 
+type Payload = {
+  queries: string;
+};
+
 export default class ReactQueryDevtoolsFlipperPlugin extends FlipperPlugin<{}, any, PersistedState> {
   static title = 'React Query Devtools';
   static icon = 'app-react';
   static defaultPersistedState = {
     queries: [],
   };
-  static persistedStateReducer(persistedState: PersistedState, method: string, queries: Query[]): PersistedState {
+  static persistedStateReducer(persistedState: PersistedState, method: string, payload: Payload): PersistedState {
     if (method === 'queries') {
       return {
         ...persistedState,
-        queries,
+        queries: parse(payload.queries) as Query[],
       };
     }
 
