@@ -2,6 +2,10 @@ import { stringify } from 'flatted';
 import { addPlugin as addFlipperPlugin } from 'react-native-flipper';
 import { CachedQuery, QueryCache } from 'react-query';
 
+type SerializedQueriesPayload = {
+  queries: string;
+};
+
 export function addPlugin(queryCache: QueryCache) {
   let unsubscribe: (() => void) | undefined;
 
@@ -14,8 +18,10 @@ export function addPlugin(queryCache: QueryCache) {
     return queryCache.getQueries((query) => query.queryHash === queryHash)[0];
   }
 
-  function getSerializedQueries(): string {
-    return stringify(getQueries());
+  function getSerializedQueries(): SerializedQueriesPayload {
+    return {
+      queries: stringify(getQueries()),
+    };
   }
 
   addFlipperPlugin({
