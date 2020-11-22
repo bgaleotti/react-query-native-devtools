@@ -1,7 +1,7 @@
 {
   "name": "react-query-native-devtools",
   "author": "Bruno Galeotti",
-  "version": "0.3.2",
+  "version": "0.3.3-canary.0",
   "license": "MIT",
   "module": "dist/react-query-native-devtools.esm.js",
   "main": "dist/index.js",
