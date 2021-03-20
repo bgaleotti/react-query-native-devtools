@@ -1,6 +1,7 @@
-import padStart from 'lodash/padStart';
+// @ts-nocheck
 
-import { Query } from '../types';
+import padStart from 'lodash/padStart';
+import { Query } from 'react-query';
 
 export function formatTimestamp(timestamp: number): string {
   if (timestamp === 0) {
@@ -16,12 +17,15 @@ export function formatTimestamp(timestamp: number): string {
   )}.${padStart(date.getMilliseconds().toString(), 3, '0')}`;
 }
 
+function isStale(query: Query): boolean {
+  // TODO: support observers state
+  return query.state.isInvalidated || !query.state.dataUpdatedAt;
+}
+
+function isInactive(query: Query): boolean {
+  return query.observers.length === 0;
+}
+
 export function getQueryStatusLabel(query: Query): string {
-  return query.state.isFetching
-    ? 'fetching'
-    : !query?.instances?.length || !query?.observers?.length
-    ? 'inactive'
-    : query.state.isStale
-    ? 'stale'
-    : 'fresh';
+  return query.state.isFetching ? 'fetching' : isInactive(query) ? 'inactive' : isStale(query) ? 'stale' : 'fresh';
 }

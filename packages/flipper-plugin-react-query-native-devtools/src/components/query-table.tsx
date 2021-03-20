@@ -1,7 +1,7 @@
 import { SearchableTable, styled, TableBodyRow, Text } from 'flipper';
 import React, { FunctionComponent } from 'react';
+import { Query } from 'react-query';
 
-import { Query } from '../types';
 import { formatTimestamp, getQueryStatusLabel } from '../utils';
 
 const COLUMN_SIZE = {
@@ -34,7 +34,7 @@ const buildRow = (query: Query): TableBodyRow => {
   return {
     columns: {
       updatedAt: {
-        value: <TextEllipsis>{formatTimestamp(query.state.updatedAt)}</TextEllipsis>,
+        value: <TextEllipsis>{formatTimestamp(query.state.dataUpdatedAt)}</TextEllipsis>,
       },
       status: {
         value: <TextEllipsis>{getQueryStatusLabel(query)}</TextEllipsis>,
