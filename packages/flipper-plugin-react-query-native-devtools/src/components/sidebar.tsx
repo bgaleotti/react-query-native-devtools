@@ -1,7 +1,6 @@
 import { Button, DetailSidebar, ManagedDataInspector, Panel, Toolbar } from 'flipper';
 import React, { FunctionComponent } from 'react';
-
-import { Query } from '../types';
+import { Query } from 'react-query';
 
 type SidebarProps = {
   query?: Query;

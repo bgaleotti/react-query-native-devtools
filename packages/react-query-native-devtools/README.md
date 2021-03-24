@@ -15,32 +15,22 @@ $ yarn add --dev react-query-native-devtools react-native-flipper
 Register the plugin in your application:
 
 ```javascript
+import * as React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
 const queryCache = new QueryCache();
 
 if (__DEV__) {
   import('react-query-native-devtools').then(({ addPlugin }) => {
-    addPlugin(queryCache);
+    addPlugin({ queryCache });
   });
 }
 
 function App() {
   return (
-    <ReactQueryCacheProvider queryCache={queryCache}>
+    <QueryClientProvider client={queryClient}>
       <MyReactQueryApp />
-    </ReactQueryCacheProvider>
+    </QueryClientProvider>
   );
-}
-```
-
-
-⚠️ If you are using `react-query < 2.19.0`:
-
-```javascript
-import { queryCache } from 'react-query';
-
-if (__DEV__) {
-  import('react-query-native-devtools').then(({ addPlugin }) => {
-    addPlugin(queryCache);
-  });
 }
 ```

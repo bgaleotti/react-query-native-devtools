@@ -1,21 +1,26 @@
 import { stringify } from 'flatted';
 import { addPlugin as addFlipperPlugin } from 'react-native-flipper';
-import { CachedQuery, QueryCache } from 'react-query';
+import { Query, QueryClient } from 'react-query';
 
 type SerializedQueriesPayload = {
   queries: string;
 };
 
-export function addPlugin(queryCache: QueryCache) {
+type PluginProps = {
+  queryClient: QueryClient;
+};
+
+export function addPlugin({ queryClient }: PluginProps) {
+  const queryCache = queryClient.getQueryCache();
+
   let unsubscribe: (() => void) | undefined;
 
   function getQueries() {
-    return queryCache.getQueries(() => true);
+    return queryCache.getAll();
   }
 
-  function getQueryByHash(queryHash: string): CachedQuery<unknown> {
-    // @ts-ignore
-    return queryCache.getQueries((query) => query.queryHash === queryHash)[0];
+  function getQueryByHash(queryHash: string): Query | undefined {
+    return getQueries().find((query) => query.queryHash === queryHash);
   }
 
   function getSerializedQueries(): SerializedQueriesPayload {
@@ -32,14 +37,15 @@ export function addPlugin(queryCache: QueryCache) {
       });
 
       connection.receive('query:refetch', ({ queryHash }, responder) => {
-        // @ts-ignore
         getQueryByHash(queryHash)?.fetch();
-        responder.success();
+        responder.success(true);
       });
       connection.receive('query:remove', ({ queryHash }, responder) => {
-        // @ts-ignore
-        queryCache.removeQueries((query) => query.queryHash === queryHash);
-        responder.success();
+        const query = getQueryByHash(queryHash);
+        if (query) {
+          queryClient.removeQueries(query.queryKey, { exact: true });
+        }
+        responder.success(true);
       });
 
       // send initial queries
