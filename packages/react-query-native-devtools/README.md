@@ -18,11 +18,11 @@ Register the plugin in your application:
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-const queryCache = new QueryCache();
+const queryClient = new QueryClient();
 
 if (__DEV__) {
   import('react-query-native-devtools').then(({ addPlugin }) => {
-    addPlugin({ queryCache });
+    addPlugin({ queryClient });
   });
 }
 
