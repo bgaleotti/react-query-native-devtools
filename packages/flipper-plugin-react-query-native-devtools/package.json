@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "flatted": "^3.1.0",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.21"
   },
   "peerDependencies": {
     "flipper": "latest"
