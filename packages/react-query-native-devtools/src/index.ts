@@ -38,14 +38,14 @@ export function addPlugin({ queryClient }: PluginProps) {
 
       connection.receive('query:refetch', ({ queryHash }, responder) => {
         getQueryByHash(queryHash)?.fetch();
-        responder.success(true);
+        responder.success({ack: true});
       });
       connection.receive('query:remove', ({ queryHash }, responder) => {
         const query = getQueryByHash(queryHash);
         if (query) {
           queryClient.removeQueries(query.queryKey, { exact: true });
         }
-        responder.success(true);
+        responder.success({ack: true});
       });
 
       // send initial queries
