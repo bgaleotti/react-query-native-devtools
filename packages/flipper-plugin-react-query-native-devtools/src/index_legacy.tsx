@@ -3,8 +3,8 @@ import { colors, FlexRow, FlipperPlugin, PluginClient, styled } from 'flipper';
 import React, { FunctionComponent, useState } from 'react';
 import { Query } from 'react-query';
 
-import QueryTable from './components/query-table';
-import Sidebar from './components/sidebar';
+import QueryTable from './components/QueryTable';
+import Sidebar from './components/Sidebar';
 
 const Container = styled(FlexRow)({
   backgroundColor: colors.macOSTitleBarBackgroundBlur,
