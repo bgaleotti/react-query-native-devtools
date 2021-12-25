@@ -3,7 +3,7 @@
   "name": "flipper-plugin-react-query-native-devtools",
   "id": "flipper-plugin-react-query-native-devtools",
   "description": "Inspect React Query cache with Flipper",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "main": "dist/bundle.js",
   "flipperBundlerEntry": "src/index.tsx",
   "author": "Bruno Galeotti",
@@ -11,6 +11,7 @@
   "keywords": [
     "flipper-plugin"
   ],
+  "private": true,
   "repository": "https://github.com/bgaleotti/react-query-native-devtools/",
   "scripts": {
     "build": "true",
@@ -19,14 +20,16 @@
     "lint:fix:staged": "eslint --fix --ignore-path .eslintignore",
     "release": "release-it",
     "test": "true",
-    "prepack": "flipper-pkg lint && flipper-pkg bundle"
+    "prepack": "flipper-pkg lint && flipper-pkg bundle",
+    "pack": "flipper-pkg"
   },
   "dependencies": {
     "flatted": "^3.1.0",
     "lodash": "^4.17.21"
   },
   "peerDependencies": {
-    "flipper": "latest"
+    "flipper": "*",
+    "flipper-plugin": "*"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
@@ -50,5 +53,10 @@
     "release-it": "^13.5.4",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
+  },
+  "workspaces": {
+    "nohoist": [
+      "flatted", "lodash"
+    ]
   }
 }

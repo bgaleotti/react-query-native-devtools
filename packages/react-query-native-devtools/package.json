@@ -1,7 +1,7 @@
 {
   "name": "react-query-native-devtools",
   "author": "Bruno Galeotti",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "license": "MIT",
   "module": "dist/react-query-native-devtools.esm.js",
   "main": "dist/index.js",
@@ -15,7 +15,8 @@
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build"
+    "prepare": "tsdx build",
+    "copy": "cp -R ~/project/55react-query-native-devtools-DenisIrkhin/packages/react-query-native-devtools/* ~/project/77goto-mobile/node_modules/react-query-native-devtools/"
   },
   "peerDependencies": {
     "react-native-flipper": "^0.81.0",

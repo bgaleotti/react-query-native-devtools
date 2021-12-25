@@ -1,0 +1,49 @@
+{
+  "$schema": "https://fbflipper.com/schemas/plugin-package/v2.json",
+  "name": "flipper-plugin-di-example",
+  "id": "di-example",
+  "version": "1.0.0",
+  "pluginType": "client",
+  "main": "dist/bundle.js",
+  "flipperBundlerEntry": "src/index.tsx",
+  "license": "MIT",
+  "keywords": [
+    "flipper-plugin"
+  ],
+  "icon": "apps",
+  "title": "DI Example",
+  "scripts": {
+    "lint": "flipper-pkg lint",
+    "prepack": "flipper-pkg lint && flipper-pkg bundle",
+    "build": "flipper-pkg bundle",
+    "watch": "flipper-pkg bundle --watch",
+    "test": "jest --no-watchman"
+  },
+  "peerDependencies": {
+    "@emotion/styled": "latest",
+    "flipper-plugin": "^0.127.0",
+    "antd": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "latest",
+    "@babel/preset-typescript": "latest",
+    "@emotion/styled": "latest",
+    "@testing-library/react": "latest",
+    "@types/jest": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "antd": "latest",
+    "flipper-plugin": "latest",
+    "flipper-pkg": "latest",
+    "jest": "latest",
+    "jest-mock-console": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "typescript": "latest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}

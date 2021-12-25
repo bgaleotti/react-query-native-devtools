@@ -1,5 +1,5 @@
 import { stringify } from 'flatted';
-import { addPlugin as addFlipperPlugin } from 'react-native-flipper';
+import { addPlugin as addFlipperPlugin, Flipper } from 'react-native-flipper';
 import { Query, QueryClient } from 'react-query';
 
 type SerializedQueriesPayload = {
@@ -24,17 +24,35 @@ export function addPlugin({ queryClient }: PluginProps) {
   }
 
   function getSerializedQueries(): SerializedQueriesPayload {
-    return {
-      queries: stringify(getQueries()),
-    };
+    const queries = getQueries();
+
+    const startSerializeTime = Date.now();
+    const serializedQueries = {
+      queries: stringify(queries),
+    }
+    const serializeTime = Date.now() - startSerializeTime;
+    console.log('5+++ ~ file: index.ts ~ line 37 ~ getSerializedQueries ~ serializeTime', serializeTime)
+
+    return serializedQueries;
+  }
+
+  /**
+   * handles QueryCacheNotifyEvent
+   * @param event - QueryCacheNotifyEvent, but RQ doesn't have it exported
+   */
+  const handleCacheEvent = (connection: Flipper.FlipperConnection) => (event: any) => {
+    console.log('5+++ ~ file: index.ts ~ line 45 ~ handleCacheEvent ~ event.type', event.type)
+    console.log('5+++ ~ file: index.ts ~ line 45 ~ handleCacheEvent ~ event.query', event.query.queryHash)
+    
+    connection.send('queries', getSerializedQueries());
   }
 
   addFlipperPlugin({
     getId: () => 'flipper-plugin-react-query-native-devtools',
     onConnect(connection) {
-      unsubscribe = queryCache.subscribe(() => {
-        connection.send('queries', getSerializedQueries());
-      });
+      console.log('5+++ ~ file: index.ts ~ line 53 ~ onConnect ~ connection', connection)
+
+      unsubscribe = queryCache.subscribe(handleCacheEvent(connection));
 
       connection.receive('query:refetch', ({ queryHash }, responder) => {
         getQueryByHash(queryHash)?.fetch();
