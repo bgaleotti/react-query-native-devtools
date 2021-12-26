@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
 // import { DataList, Layout, styled, TableBodyRow, Text } from 'flipper-plugin';
-import { DataList, DataSource, DataTable, Layout } from 'flipper-plugin';
+import { DataSource, DataTable } from 'flipper-plugin';
 import React, { FunctionComponent } from 'react';
 import { Query } from 'react-query';
 

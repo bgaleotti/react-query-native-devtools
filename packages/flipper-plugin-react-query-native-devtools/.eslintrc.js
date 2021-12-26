@@ -10,7 +10,6 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
   ],
   plugins: ['simple-import-sort', '@typescript-eslint'],
   rules: {
