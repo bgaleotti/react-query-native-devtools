@@ -7,19 +7,19 @@ import {
   createState,
   DataSource,
   DataTable,
+  DataTableColumn,
   Layout,
   PluginClient,
   usePlugin,
-  useValue,
 } from 'flipper-plugin';
 import React from 'react';
-import type { Query, QueryKey } from 'react-query';
+import type { Query } from 'react-query';
 
 // import { QueryTable } from './components/QueryTable';
 // import type { QueryCacheNotifyEvent } from 'types/queryCacheNotifyEvent';
 
 type Events = {
-  queries: string;
+  queries: { queries: string };
 };
 
 type PluginReturn = {
@@ -37,9 +37,9 @@ export const plugin = (client: PluginClient<Events, {}>): PluginReturn => {
   const selectedQueryId = createState<string | null>(null);
   client.onMessage('queries', (event) => {
     console.log('5+++ ~ file: index.ts ~ line 53 ~ onMessage ~ event', event);
-    // console.log('5+++ ~ file: index.ts ~ line 54 ~ onMessage ~ parse(event)', parse(event.queries));
+    console.log('5+++ ~ file: index.ts ~ line 54 ~ onMessage ~ parse(event)', parse(event.queries));
     // queries.clear();
-    parse(event).forEach((query: Query) => queries.upsert(query));
+    parse(event.queries).forEach((query: Query) => queries.upsert(query));
   });
 
   const handleOnSelect = (record: Query): void => {
@@ -51,14 +51,27 @@ export const plugin = (client: PluginClient<Events, {}>): PluginReturn => {
 
 export const Component: React.FC = () => {
   const instance = usePlugin(plugin);
-  // const queries = useValue(instance.queries);
+  console.log('5+++ ~ file: index.tsx ~ line 54 ~ instance.queries', instance.queries);
   // console.log('5+++ ~ file: index.tsx ~ line 29 ~ queries', queries);
   // const selectedQueryId = useValue(instance.selectedQueryId);
+  const baseColumns: DataTableColumn<Query>[] = [
+    {
+      key: 'queryHash',
+      title: 'Query Hash',
+      width: 300,
+    },
+    {
+      key: 'state',
+      title: 'Response Time',
+      width: 300,
+      visible: true,
+    },
+  ];
 
   return (
-    <Layout.Container gap>
+    <Layout.Container grow>
       {/* <QueryTable queries={instance.queries} onSelect={instance.setSelection} /> */}
-      <DataTable dataSource={instance.queries} onSelect={instance.handleOnSelect} />
+      <DataTable dataSource={instance.queries} onSelect={instance.handleOnSelect} columns={baseColumns} />
     </Layout.Container>
   );
 };
