@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable no-undef */
 import { parse } from 'flatted';
 import {
   Atom,
@@ -36,6 +34,7 @@ type PluginReturn = {
 
 export type ExtendedQuery = Query & {
   status: QueryStatus;
+  dataUpdateCount: number;
   observersCount: number;
   isQueryActive: boolean;
 };
@@ -51,6 +50,7 @@ export const plugin = (client: PluginClient<Events, Methods>): PluginReturn => {
     // console.log('5+++ ~ file: index.ts ~ line 54 ~ onMessage ~ parse(event)', parse(event.queries));
     parse(event.queries).forEach((query: ExtendedQuery) => {
       query.status = query.state.status;
+      query.dataUpdateCount = query.state.dataUpdateCount;
       query.observersCount = getObserversCounter(query);
       query.isQueryActive = isQueryActive(query);
       queries.upsert(query);
@@ -91,15 +91,21 @@ const columns: DataTableColumn<ExtendedQuery>[] = [
     visible: true,
   },
   {
-    key: 'observersCount',
-    title: 'Observers',
-    width: 30,
+    key: 'dataUpdateCount',
+    title: 'Data Updated Times',
+    width: 40,
     visible: true,
   },
   {
     key: 'isQueryActive',
     title: 'isActive',
     width: 40,
+    visible: true,
+  },
+  {
+    key: 'observersCount',
+    title: 'Observers',
+    width: 30,
     visible: true,
   },
   {

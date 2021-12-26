@@ -11,7 +11,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
   ],
-  plugins: ['simple-import-sort', '@typescript-eslint'],
+  plugins: ['simple-import-sort', '@typescript-eslint', 'react-hooks'],
   rules: {
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/no-empty-function': ['error', { allow: ['arrowFunctions'] }],
@@ -26,6 +26,7 @@ module.exports = {
     'simple-import-sort/sort': 'error',
     'sort-imports': 'off',
     strict: ['error', 'global'],
+    '@typescript-eslint/no-unused-vars': 'off',
   },
   settings: {
     'import/parsers': {
