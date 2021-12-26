@@ -25,7 +25,6 @@ export function addPlugin({ queryClient }: PluginProps) {
 
   function getSerializedQueries(): SerializedQueriesPayload {
     const queries = getQueries();
-    console.log('5+++ ~ file: index.ts ~ line 28 ~ getSerializedQueries ~ queries[0]', queries[0])
 
     const startSerializeTime = Date.now();
     const serializedQueries = {
@@ -43,8 +42,7 @@ export function addPlugin({ queryClient }: PluginProps) {
    */
   const handleCacheEvent = (connection: Flipper.FlipperConnection) => (event: any) => {
     console.log('5+++ ~ file: index.ts ~ line 44 ~ handleCacheEvent ~ event.type', event.type)
-    // console.log('5+++ ~ file: index.ts ~ line 45 ~ handleCacheEvent ~ event.queryHash', event.query.queryHash)
-    console.log('5+++ ~ file: index.ts ~ line 45 ~ handleCacheEvent ~ event.query', event.query)
+    console.log('5+++ ~ file: index.ts ~ line 45 ~ handleCacheEvent ~ event.queryHash', event.query.queryHash)
     
     connection.send('queries', getSerializedQueries());
   }

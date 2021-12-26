@@ -1,6 +1,6 @@
 # React Query Native Devtools
 
-Flipper devtools for [React Query](https://github.com/tannerlinsley/react-query)
+Flipper client plug-in for [React Query](https://github.com/tannerlinsley/react-query)
 
 ## Installation
 
