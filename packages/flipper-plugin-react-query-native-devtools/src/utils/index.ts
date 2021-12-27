@@ -15,11 +15,6 @@ export function formatTimestamp(timestamp: number): string {
   )}.${padStart(date.getMilliseconds().toString(), 3, '0')}`;
 }
 
-// function isStale(query: Query): boolean {
-//   // TODO: support observers state
-//   return query.state.isInvalidated || !query.state.dataUpdatedAt;
-// }
-
 export function getObserversCounter(query: Query): number {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   /* @ts-ignore */
@@ -31,7 +26,3 @@ export function isQueryActive(query: Query): boolean {
   /* @ts-ignore */
   return query.observers.some((observer) => observer.options.enabled !== false);
 }
-
-// export function getQueryStatusLabel(query: Query): string {
-//   return query.state.isFetching ? 'fetching' : getObserversCounter(query) ? 'inactive' : isStale(query) ? 'stale' : 'fresh';
-// }
