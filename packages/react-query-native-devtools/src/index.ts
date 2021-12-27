@@ -29,9 +29,12 @@ export function addPlugin({ queryClient }: PluginProps) {
     const startSerializeTime = Date.now();
     const serializedQueries = {
       queries: stringify(queries),
-    }
+    };
     const serializeTime = Date.now() - startSerializeTime;
-    console.log('5+++ ~ file: index.ts ~ line 34 ~ getSerializedQueries ~ serializeTime', serializeTime)
+    console.log(
+      '5+++ ~ file: index.ts ~ line 34 ~ getSerializedQueries ~ serializeTime',
+      serializeTime
+    );
 
     return serializedQueries;
   }
@@ -40,29 +43,46 @@ export function addPlugin({ queryClient }: PluginProps) {
    * handles QueryCacheNotifyEvent
    * @param event - QueryCacheNotifyEvent, but RQ doesn't have it exported
    */
-  const handleCacheEvent = (connection: Flipper.FlipperConnection) => (event: any) => {
-    console.log('5+++ ~ file: index.ts ~ line 44 ~ handleCacheEvent ~ event.type', event.type)
-    console.log('5+++ ~ file: index.ts ~ line 45 ~ handleCacheEvent ~ event.queryHash', event.query.queryHash)
-    
-    connection.send('queries', getSerializedQueries());
-  }
+  const handleCacheEvent =
+    (connection: Flipper.FlipperConnection) => (event: any) => {
+      console.log(
+        '5+++ ~ file: index.ts ~ line 44 ~ handleCacheEvent ~ event.type',
+        event.type
+      );
+      console.log(
+        '5+++ ~ file: index.ts ~ line 45 ~ handleCacheEvent ~ event.queryHash',
+        event.query.queryHash
+      );
+
+      connection.send('queries', getSerializedQueries());
+    };
 
   addFlipperPlugin({
     getId: () => 'flipper-plugin-react-query-native-devtools',
     onConnect(connection) {
-      console.log('5+++ ~ file: index.ts ~ line 53 ~ onConnect ~ connection', connection)
+      console.log(
+        '5+++ ~ file: index.ts ~ line 53 ~ onConnect ~ connection',
+        connection
+      );
 
       unsubscribe = queryCache.subscribe(handleCacheEvent(connection));
 
       connection.receive('queryRefetch', ({ queryHash }, responder) => {
-        console.log('5+++ ~ file: index.ts ~ line 61 ~ connection.receive ~ queryRefetch')
+        console.log(
+          '5+++ ~ file: index.ts ~ line 61 ~ connection.receive ~ queryRefetch'
+        );
         getQueryByHash(queryHash)?.fetch();
         responder.success({ ack: true });
       });
       connection.receive('queryRemove', ({ queryHash }, responder) => {
-        console.log('5+++ ~ file: index.ts ~ line 69 ~ connection.receive ~ queryRemove')
+        console.log(
+          '5+++ ~ file: index.ts ~ line 69 ~ connection.receive ~ queryRemove'
+        );
         const query = getQueryByHash(queryHash);
-        console.log('5+++ ~ file: index.ts ~ line 65 ~ connection.receive ~ query', query)
+        console.log(
+          '5+++ ~ file: index.ts ~ line 65 ~ connection.receive ~ query',
+          query
+        );
         if (query) {
           queryClient.removeQueries(query.queryKey, { exact: true });
         }
