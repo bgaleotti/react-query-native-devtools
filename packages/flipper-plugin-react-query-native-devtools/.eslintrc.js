@@ -20,8 +20,7 @@ module.exports = {
     camelcase: 'off',
     'linebreak-style': ['error', 'unix'],
     'newline-before-return': 'error',
-    // FIXME: revert
-    'no-console': 'warn',
+    'no-console': 'error',
     'react/prop-types': 'off',
     'simple-import-sort/imports': 'error',
     'sort-imports': 'off',

@@ -14,11 +14,14 @@ import React from 'react';
 import type { Query, QueryStatus } from 'react-query';
 
 import { QuerySidebar } from './components/QuerySidebar';
+import { NotifyEventQueryAdded, QueryCacheNotifyEvent } from './types/queryCacheNotifyEvent';
 import { formatTimestamp, getObserversCounter, isQueryActive } from './utils';
 
 type Events = {
   queries: { queries: string };
+  queryCacheEvent: { cashEvent: string };
 };
+
 type Methods = {
   queryRefetch(params: { queryHash: string }): Promise<void>;
   queryRemove(params: { queryHash: string }): Promise<void>;
@@ -39,22 +42,55 @@ export type ExtendedQuery = Query & {
   isQueryActive: boolean;
 };
 
+const extendQuery = (query: Query): ExtendedQuery => {
+  const extendedQuery = query as ExtendedQuery;
+  extendedQuery.status = query.state.status;
+  extendedQuery.dataUpdateCount = query.state.dataUpdateCount;
+  extendedQuery.observersCount = getObserversCounter(query);
+  extendedQuery.isQueryActive = isQueryActive(query);
+
+  return extendedQuery;
+};
 export const plugin = (client: PluginClient<Events, Methods>): PluginReturn => {
   const queries = createDataSource<ExtendedQuery, 'queryHash'>([], {
     key: 'queryHash',
   });
-  console.log('5+++ ~ file: index.tsx ~ line 22 ~ plugin ~ client', client);
   const selectedQueryId = createState<string | undefined>(undefined);
+
   client.onMessage('queries', (event) => {
-    // console.log('5+++ ~ file: index.ts ~ line 53 ~ onMessage ~ event', event);
-    // console.log('5+++ ~ file: index.ts ~ line 54 ~ onMessage ~ parse(event)', parse(event.queries));
     parse(event.queries).forEach((query: ExtendedQuery) => {
-      query.status = query.state.status;
-      query.dataUpdateCount = query.state.dataUpdateCount;
-      query.observersCount = getObserversCounter(query);
-      query.isQueryActive = isQueryActive(query);
-      queries.upsert(query);
+      queries.append(extendQuery(query));
     });
+  });
+
+  client.onMessage('queryCacheEvent', (event) => {
+    const cashEvent = parse(event.cashEvent) as QueryCacheNotifyEvent;
+    const {
+      type,
+      query,
+      query: { queryHash },
+    } = cashEvent;
+
+    if (!type) {
+      return;
+    }
+
+    switch (type) {
+      case 'queryAdded':
+        queries.append(extendQuery(query));
+        break;
+      case 'queryRemoved':
+        queries.deleteByKey(queryHash);
+        break;
+      case 'queryUpdated':
+      case 'observerAdded':
+      case 'observerRemoved':
+      case 'observerResultsUpdated':
+        queries.upsert(extendQuery(query));
+        break;
+      default:
+        break;
+    }
   });
 
   const handleOnSelect = (record: ExtendedQuery): void => {
@@ -117,7 +153,6 @@ const columns: DataTableColumn<ExtendedQuery>[] = [
 ];
 export const Component: React.FC = () => {
   const instance = usePlugin(plugin);
-  console.log('5+++ ~ file: index.tsx ~ line 54 ~ instance.queries', instance.queries);
 
   return (
     <Layout.Container grow>

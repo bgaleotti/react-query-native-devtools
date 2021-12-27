@@ -3,7 +3,7 @@ import type { Action } from 'react-query/types/core/query';
 
 // Copies from RQ https://github.com/tannerlinsley/react-query/blob/c989bde9e13a59a58428ea6dde9d958251cc09d5/src/core/queryCache.ts#L25
 // TODO: Remove this once RQ has exported this types
-interface NotifyEventQueryAdded {
+export interface NotifyEventQueryAdded {
   type: 'queryAdded';
   query: Query<any, any, any, any>;
 }
