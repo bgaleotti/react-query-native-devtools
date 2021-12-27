@@ -23,7 +23,7 @@ module.exports = {
     // FIXME: revert
     'no-console': 'warn',
     'react/prop-types': 'off',
-    'simple-import-sort/sort': 'error',
+    'simple-import-sort/imports': 'error',
     'sort-imports': 'off',
     strict: ['error', 'global'],
     '@typescript-eslint/no-unused-vars': 'off',

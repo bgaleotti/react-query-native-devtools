@@ -47,7 +47,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "flipper": "latest",
     "flipper-pkg": "latest",
-    "husky": "^7.0.4",
+    "husky": "^7.0.0",
     "lint-staged": "^12.1.4",
     "prettier": "^2.5.1",
     "react-query": "^3.34.6",
@@ -57,7 +57,8 @@
   },
   "workspaces": {
     "nohoist": [
-      "flatted", "lodash"
+      "flatted",
+      "lodash"
     ]
   }
 }

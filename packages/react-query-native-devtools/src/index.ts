@@ -54,12 +54,15 @@ export function addPlugin({ queryClient }: PluginProps) {
 
       unsubscribe = queryCache.subscribe(handleCacheEvent(connection));
 
-      connection.receive('query:refetch', ({ queryHash }, responder) => {
+      connection.receive('queryRefetch', ({ queryHash }, responder) => {
+        console.log('5+++ ~ file: index.ts ~ line 61 ~ connection.receive ~ queryRefetch')
         getQueryByHash(queryHash)?.fetch();
         responder.success({ ack: true });
       });
-      connection.receive('query:remove', ({ queryHash }, responder) => {
+      connection.receive('queryRemove', ({ queryHash }, responder) => {
+        console.log('5+++ ~ file: index.ts ~ line 69 ~ connection.receive ~ queryRemove')
         const query = getQueryByHash(queryHash);
+        console.log('5+++ ~ file: index.ts ~ line 65 ~ connection.receive ~ query', query)
         if (query) {
           queryClient.removeQueries(query.queryKey, { exact: true });
         }

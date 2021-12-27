@@ -66,6 +66,7 @@ export const plugin = (client: PluginClient<Events, Methods>): PluginReturn => {
   };
 
   const handleQueryRemove = (query: ExtendedQuery): void => {
+    queries.deleteByKey(query.queryHash);
     client.send('queryRemove', { queryHash: query.queryHash });
   };
 
@@ -75,7 +76,7 @@ export const plugin = (client: PluginClient<Events, Methods>): PluginReturn => {
 const columns: DataTableColumn<ExtendedQuery>[] = [
   {
     key: 'state',
-    title: 'Data Updated Time',
+    title: 'Data Updated At',
     width: 100,
     visible: true,
     formatters: [
@@ -92,7 +93,7 @@ const columns: DataTableColumn<ExtendedQuery>[] = [
   },
   {
     key: 'dataUpdateCount',
-    title: 'Data Updated Times',
+    title: 'Data Updated Count',
     width: 40,
     visible: true,
   },
