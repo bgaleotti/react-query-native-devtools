@@ -15,8 +15,7 @@
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
-    "copy": "cp -R ~/project/55react-query-native-devtools-DenisIrkhin/packages/react-query-native-devtools/* ~/project/77goto-mobile/node_modules/react-query-native-devtools/"
+    "prepare": "tsdx build"
   },
   "peerDependencies": {
     "react-native-flipper": "^0.127.0",
@@ -30,6 +29,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^7.0.4",
     "react-native-flipper": "^0.127.0",

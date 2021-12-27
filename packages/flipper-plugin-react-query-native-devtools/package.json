@@ -28,7 +28,6 @@
     "lodash": "^4.17.21"
   },
   "peerDependencies": {
-    "flipper": "*",
     "flipper-plugin": "*",
     "antd": "*"
   },
@@ -40,13 +39,14 @@
     "@types/react": "^17.0.38",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
+    "antd": "latest",
     "eslint": "^8.5.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "flipper": "latest",
     "flipper-pkg": "latest",
+    "flipper-plugin": "latest",
     "husky": "^7.0.0",
     "lint-staged": "^12.1.4",
     "prettier": "^2.5.1",

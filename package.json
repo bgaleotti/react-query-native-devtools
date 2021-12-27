@@ -9,6 +9,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^7.0.0",
     "lint-staged": "^12.1.4",
@@ -25,8 +26,5 @@
     "lint:fix": "eslint --fix --ignore-path .eslintignore './**/src/**/*.{ts,tsx}'",
     "lint:fix:staged": "eslint --fix --ignore-path .eslintignore",
     "prepare": "husky install"
-  },
-  "dependencies": {
-    "eslint-plugin-react-hooks": "^4.3.0"
   }
 }

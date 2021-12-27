@@ -7,6 +7,7 @@ import { plugin } from '../index';
 const ContainerWithPaddings = styled(Layout.Container)({
   padding: '10px 5px',
 });
+
 export const QuerySidebar: React.FC = () => {
   const instance = usePlugin(plugin);
   const selectedQueryId = useValue(instance.selectedQueryId);
