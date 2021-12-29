@@ -26,6 +26,8 @@ module.exports = {
     'sort-imports': 'off',
     strict: ['error', 'global'],
     '@typescript-eslint/no-unused-vars': 'off',
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
   },
   settings: {
     'import/parsers': {

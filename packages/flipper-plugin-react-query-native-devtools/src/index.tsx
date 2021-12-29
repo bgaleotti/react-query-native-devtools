@@ -14,7 +14,7 @@ import React from 'react';
 import type { Query, QueryStatus } from 'react-query';
 
 import { QuerySidebar } from './components/QuerySidebar';
-import { NotifyEventQueryAdded, QueryCacheNotifyEvent } from './types/queryCacheNotifyEvent';
+import { QueryCacheNotifyEvent } from './types/queryCacheNotifyEvent';
 import { formatTimestamp, getObserversCounter, isQueryActive } from './utils';
 
 type Events = {
@@ -58,6 +58,10 @@ export const plugin = (client: PluginClient<Events, Methods>): PluginReturn => {
   const selectedQueryId = createState<string | undefined>(undefined);
 
   client.onMessage('queries', (event) => {
+    // That happens onConnect only
+    queries.clear();
+    selectedQueryId.set(undefined);
+
     parse(event.queries).forEach((query: ExtendedQuery) => {
       queries.append(extendQuery(query));
     });
@@ -142,7 +146,7 @@ const columns: DataTableColumn<ExtendedQuery>[] = [
   {
     key: 'observersCount',
     title: 'Observers',
-    width: 30,
+    width: 40,
     visible: true,
   },
   {
@@ -156,11 +160,12 @@ export const Component: React.FC = () => {
 
   return (
     <Layout.Container grow>
-      <DataTable
+      <DataTable<ExtendedQuery>
         dataSource={instance.queries}
         onSelect={instance.handleOnSelect}
         columns={columns}
         enableMultiSelect={false}
+        enableAutoScroll
       />
       <QuerySidebar />
     </Layout.Container>
