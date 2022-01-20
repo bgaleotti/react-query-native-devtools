@@ -1,4 +1,5 @@
 import padStart from 'lodash/padStart';
+import { nanoid } from 'nanoid';
 import type { Query } from 'react-query';
 
 export function formatTimestamp(timestamp: number): string {
@@ -25,4 +26,10 @@ export function isQueryActive(query: Query): boolean {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   /* @ts-ignore */
   return query.observers.some((observer) => observer.options.enabled !== false);
+}
+
+export function makeQuerySelectionKey(query: Query): string {
+  const key = `${nanoid(10)}-${query.queryHash}`;
+
+  return key;
 }

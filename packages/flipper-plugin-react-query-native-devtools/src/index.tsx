@@ -15,7 +15,7 @@ import type { Query, QueryStatus } from 'react-query';
 
 import { QuerySidebar } from './components/QuerySidebar';
 import { QueryCacheNotifyEvent } from './types/queryCacheNotifyEvent';
-import { formatTimestamp, getObserversCounter, isQueryActive } from './utils';
+import { formatTimestamp, getObserversCounter, isQueryActive, makeQuerySelectionKey } from './utils';
 
 type Events = {
   queries: { queries: string };
@@ -91,6 +91,11 @@ export const plugin = (client: PluginClient<Events, Methods>): PluginReturn => {
       case 'observerRemoved':
       case 'observerResultsUpdated':
         queries.upsert(extendQuery(query));
+
+        // To re-render the sidebar when we have selected query and the query is updated
+        if (selectedQueryId.get()?.slice(11) === queryHash) {
+          selectedQueryId.set(makeQuerySelectionKey(query));
+        }
         break;
       default:
         break;
@@ -98,7 +103,8 @@ export const plugin = (client: PluginClient<Events, Methods>): PluginReturn => {
   });
 
   const handleOnSelect = (record: ExtendedQuery): void => {
-    selectedQueryId.set(record?.queryHash);
+    const newSelectQueryId = record ? makeQuerySelectionKey(record) : undefined;
+    selectedQueryId.set(newSelectQueryId);
   };
 
   const handleQueryRefetch = (query: ExtendedQuery): void => {

@@ -14,7 +14,7 @@ export const QuerySidebar: React.FC = () => {
   if (!selectedQueryId) {
     return null;
   }
-  const query = instance.queries.getById(selectedQueryId);
+  const query = instance.queries.getById(selectedQueryId.slice(11));
   if (!query) {
     return null;
   }

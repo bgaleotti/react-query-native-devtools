@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "flatted": "^3.2.4",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "nanoid": "^3.1.8"
   },
   "peerDependencies": {
     "flipper-plugin": "*",
@@ -58,7 +59,8 @@
   "workspaces": {
     "nohoist": [
       "flatted",
-      "lodash"
+      "lodash",
+      "nanoid"
     ]
   }
 }

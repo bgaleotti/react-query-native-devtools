@@ -4,3 +4,4 @@ node_modules/
 **/*test*
 **/node_modules/
 **/dist/
+**/.watchmanconfig
