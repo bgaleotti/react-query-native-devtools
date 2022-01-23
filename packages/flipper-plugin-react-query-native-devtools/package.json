@@ -3,7 +3,7 @@
   "name": "flipper-plugin-react-query-native-devtools",
   "id": "flipper-plugin-react-query-native-devtools",
   "description": "Inspect React Query cache with Flipper",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "main": "dist/bundle.js",
   "flipperBundlerEntry": "src/index.tsx",
   "author": "Bruno Galeotti",
@@ -11,6 +11,7 @@
   "keywords": [
     "flipper-plugin"
   ],
+  "private": true,
   "repository": "https://github.com/bgaleotti/react-query-native-devtools/",
   "scripts": {
     "build": "true",
@@ -19,36 +20,47 @@
     "lint:fix:staged": "eslint --fix --ignore-path .eslintignore",
     "release": "release-it",
     "test": "true",
-    "prepack": "flipper-pkg lint && flipper-pkg bundle"
+    "prepack": "flipper-pkg lint && flipper-pkg bundle",
+    "pack": "flipper-pkg"
   },
   "dependencies": {
-    "flatted": "^3.1.0",
-    "lodash": "^4.17.21"
+    "flatted": "^3.2.4",
+    "lodash": "^4.17.21",
+    "nanoid": "^3.1.8"
   },
   "peerDependencies": {
-    "flipper": "latest"
+    "flipper-plugin": "*",
+    "antd": "*"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
-    "@release-it/conventional-changelog": "^1.1.1",
-    "@types/lodash": "^4.14.150",
-    "@types/react": "^16.9.34",
-    "@typescript-eslint/eslint-plugin": "^2.28.0",
-    "@typescript-eslint/parser": "^2.28.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-prettier": "^3.1.3",
-    "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-simple-import-sort": "^5.0.2",
-    "flipper": "latest",
+    "@commitlint/cli": "^16.0.0",
+    "@commitlint/config-conventional": "^16.0.0",
+    "@release-it/conventional-changelog": "^3.3.0",
+    "@types/lodash": "^4.14.178",
+    "@types/react": "^17.0.38",
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
+    "@typescript-eslint/parser": "^5.8.0",
+    "antd": "latest",
+    "eslint": "^8.5.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "flipper-pkg": "latest",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.1.5",
-    "prettier": "^2.0.4",
-    "react-query": "^3.13.0",
-    "release-it": "^13.5.4",
-    "tslib": "^1.11.1",
-    "typescript": "^3.8.3"
+    "flipper-plugin": "latest",
+    "husky": "^7.0.0",
+    "lint-staged": "^12.1.4",
+    "prettier": "^2.5.1",
+    "react-query": "^3.34.6",
+    "release-it": "^14.11.8",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.4"
+  },
+  "workspaces": {
+    "nohoist": [
+      "flatted",
+      "lodash",
+      "nanoid"
+    ]
   }
 }

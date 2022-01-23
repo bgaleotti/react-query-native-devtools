@@ -1,7 +1,6 @@
-// @ts-nocheck
-
 import padStart from 'lodash/padStart';
-import { Query } from 'react-query';
+import { nanoid } from 'nanoid';
+import type { Query } from 'react-query';
 
 export function formatTimestamp(timestamp: number): string {
   if (timestamp === 0) {
@@ -17,15 +16,20 @@ export function formatTimestamp(timestamp: number): string {
   )}.${padStart(date.getMilliseconds().toString(), 3, '0')}`;
 }
 
-function isStale(query: Query): boolean {
-  // TODO: support observers state
-  return query.state.isInvalidated || !query.state.dataUpdatedAt;
+export function getObserversCounter(query: Query): number {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  /* @ts-ignore */
+  return query.observers.length;
 }
 
-function isInactive(query: Query): boolean {
-  return query.observers.length === 0;
+export function isQueryActive(query: Query): boolean {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  /* @ts-ignore */
+  return query.observers.some((observer) => observer.options.enabled !== false);
 }
 
-export function getQueryStatusLabel(query: Query): string {
-  return query.state.isFetching ? 'fetching' : isInactive(query) ? 'inactive' : isStale(query) ? 'stale' : 'fresh';
+export function makeQuerySelectionKey(query: Query): string {
+  const key = `${nanoid(10)}-${query.queryHash}`;
+
+  return key;
 }

@@ -1,73 +1,179 @@
 import { parse } from 'flatted';
-import { colors, FlexRow, FlipperPlugin, PluginClient, styled } from 'flipper';
-import React, { FunctionComponent, useState } from 'react';
-import { Query } from 'react-query';
+import {
+  Atom,
+  createDataSource,
+  createState,
+  DataSource,
+  DataTable,
+  DataTableColumn,
+  Layout,
+  PluginClient,
+  usePlugin,
+} from 'flipper-plugin';
+import React from 'react';
+import type { Query, QueryStatus } from 'react-query';
 
-import QueryTable from './components/query-table';
-import Sidebar from './components/sidebar';
+import { QuerySidebar } from './components/QuerySidebar';
+import { QueryCacheNotifyEvent } from './types/queryCacheNotifyEvent';
+import { formatTimestamp, getObserversCounter, isQueryActive, makeQuerySelectionKey } from './utils';
 
-const Container = styled(FlexRow)({
-  backgroundColor: colors.macOSTitleBarBackgroundBlur,
-  flexWrap: 'wrap',
-  alignItems: 'flex-start',
-  alignContent: 'flex-start',
-  flexGrow: 1,
-  overflow: 'scroll',
-});
-
-type PersistedState = {
-  queries: Query[];
+type Events = {
+  queries: { queries: string };
+  queryCacheEvent: { cashEvent: string };
 };
 
-type ReactQueryDevtoolsProps = {
-  client: PluginClient;
-  persistedState: PersistedState;
+type Methods = {
+  queryRefetch(params: { queryHash: string }): Promise<void>;
+  queryRemove(params: { queryHash: string }): Promise<void>;
 };
 
-const ReactQueryDevtools: FunctionComponent<ReactQueryDevtoolsProps> = ({ client, persistedState }) => {
-  const { queries } = persistedState;
-  const [selectedQueries, setSelectedQueries] = useState<string[]>([]);
-  const selectedQuery = selectedQueries.length === 1 ? selectedQueries[0] : null;
-  const query = queries.find((query: Query): boolean => query.queryHash === selectedQuery);
-
-  const onQueryRefetch = (query: Query): void => {
-    client.call('query:refetch', { queryHash: query.queryHash });
-  };
-
-  const onQueryRemove = (query: Query): void => {
-    client.call('query:remove', { queryHash: query.queryHash });
-  };
-
-  return (
-    <Container>
-      <QueryTable queries={Object.values(queries)} onSelect={setSelectedQueries} />
-      <Sidebar query={query} onQueryRefetch={onQueryRefetch} onQueryRemove={onQueryRemove} />
-    </Container>
-  );
+type PluginReturn = {
+  queries: DataSource<ExtendedQuery, string>;
+  selectedQueryId: Atom<string | undefined>;
+  handleOnSelect: (record: ExtendedQuery) => void;
+  handleQueryRefetch: (query: ExtendedQuery) => void;
+  handleQueryRemove: (query: ExtendedQuery) => void;
 };
 
-type Payload = {
-  queries: string;
+export type ExtendedQuery = Query & {
+  status: QueryStatus;
+  dataUpdateCount: number;
+  observersCount: number;
+  isQueryActive: boolean;
 };
 
-export default class ReactQueryDevtoolsFlipperPlugin extends FlipperPlugin<{}, any, PersistedState> {
-  static title = 'React Query Devtools';
-  static icon = 'app-react';
-  static defaultPersistedState = {
-    queries: [],
-  };
-  static persistedStateReducer(persistedState: PersistedState, method: string, payload: Payload): PersistedState {
-    if (method === 'queries') {
-      return {
-        ...persistedState,
-        queries: parse(payload.queries) as Query[],
-      };
+const extendQuery = (query: Query): ExtendedQuery => {
+  const extendedQuery = query as ExtendedQuery;
+  extendedQuery.status = query.state.status;
+  extendedQuery.dataUpdateCount = query.state.dataUpdateCount;
+  extendedQuery.observersCount = getObserversCounter(query);
+  extendedQuery.isQueryActive = isQueryActive(query);
+
+  return extendedQuery;
+};
+export const plugin = (client: PluginClient<Events, Methods>): PluginReturn => {
+  const queries = createDataSource<ExtendedQuery, 'queryHash'>([], {
+    key: 'queryHash',
+  });
+  const selectedQueryId = createState<string | undefined>(undefined);
+
+  client.onMessage('queries', (event) => {
+    // That happens onConnect only
+    queries.clear();
+    selectedQueryId.set(undefined);
+
+    parse(event.queries).forEach((query: ExtendedQuery) => {
+      queries.append(extendQuery(query));
+    });
+  });
+
+  client.onMessage('queryCacheEvent', (event) => {
+    const cashEvent = parse(event.cashEvent) as QueryCacheNotifyEvent;
+    const {
+      type,
+      query,
+      query: { queryHash },
+    } = cashEvent;
+
+    if (!type) {
+      return;
     }
 
-    return persistedState;
-  }
+    switch (type) {
+      case 'queryAdded':
+        queries.append(extendQuery(query));
+        break;
+      case 'queryRemoved':
+        queries.deleteByKey(queryHash);
+        break;
+      case 'queryUpdated':
+      case 'observerAdded':
+      case 'observerRemoved':
+      case 'observerResultsUpdated':
+        queries.upsert(extendQuery(query));
 
-  render() {
-    return <ReactQueryDevtools client={this.client} persistedState={this.props.persistedState} />;
-  }
-}
+        // To re-render the sidebar when we have selected query and the query is updated
+        if (selectedQueryId.get()?.slice(11) === queryHash) {
+          selectedQueryId.set(makeQuerySelectionKey(query));
+        }
+        break;
+      default:
+        break;
+    }
+  });
+
+  const handleOnSelect = (record: ExtendedQuery): void => {
+    const newSelectQueryId = record ? makeQuerySelectionKey(record) : undefined;
+    selectedQueryId.set(newSelectQueryId);
+  };
+
+  const handleQueryRefetch = (query: ExtendedQuery): void => {
+    client.send('queryRefetch', { queryHash: query.queryHash });
+  };
+
+  const handleQueryRemove = (query: ExtendedQuery): void => {
+    queries.deleteByKey(query.queryHash);
+    client.send('queryRemove', { queryHash: query.queryHash });
+  };
+
+  return { queries, selectedQueryId, handleOnSelect, handleQueryRefetch, handleQueryRemove };
+};
+
+const columns: DataTableColumn<ExtendedQuery>[] = [
+  {
+    key: 'state',
+    title: 'Data Updated At',
+    width: 100,
+    visible: true,
+    formatters: [
+      (value: Query['state']): string => {
+        return formatTimestamp(value.dataUpdatedAt);
+      },
+    ],
+  },
+  {
+    key: 'status',
+    title: 'Status',
+    width: 80,
+    visible: true,
+  },
+  {
+    key: 'dataUpdateCount',
+    title: 'Data Updated Count',
+    width: 40,
+    visible: true,
+  },
+  {
+    key: 'isQueryActive',
+    title: 'isActive',
+    width: 40,
+    visible: true,
+  },
+  {
+    key: 'observersCount',
+    title: 'Observers',
+    width: 40,
+    visible: true,
+  },
+  {
+    key: 'queryHash',
+    title: 'Query Hash',
+    wrap: true,
+  },
+];
+export const Component: React.FC = () => {
+  const instance = usePlugin(plugin);
+
+  return (
+    <Layout.Container grow>
+      <DataTable<ExtendedQuery>
+        dataSource={instance.queries}
+        onSelect={instance.handleOnSelect}
+        columns={columns}
+        enableMultiSelect={false}
+        enableAutoScroll
+      />
+      <QuerySidebar />
+    </Layout.Container>
+  );
+};

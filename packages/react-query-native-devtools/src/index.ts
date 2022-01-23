@@ -1,5 +1,5 @@
 import { stringify } from 'flatted';
-import { addPlugin as addFlipperPlugin } from 'react-native-flipper';
+import { addPlugin as addFlipperPlugin, Flipper } from 'react-native-flipper';
 import { Query, QueryClient } from 'react-query';
 
 type SerializedQueriesPayload = {
@@ -24,32 +24,47 @@ export function addPlugin({ queryClient }: PluginProps) {
   }
 
   function getSerializedQueries(): SerializedQueriesPayload {
-    return {
-      queries: stringify(getQueries()),
+    const queries = getQueries();
+
+    const serializedQueries = {
+      queries: stringify(queries),
     };
+
+    return serializedQueries;
   }
+
+  /**
+   * handles QueryCacheNotifyEvent
+   * @param event - QueryCacheNotifyEvent, but RQ doesn't have it exported
+   */
+  const handleCacheEvent =
+    (connection: Flipper.FlipperConnection) => (event: any) => {
+      connection.send('queryCacheEvent', {
+        cashEvent: stringify(event),
+      });
+    };
 
   addFlipperPlugin({
     getId: () => 'flipper-plugin-react-query-native-devtools',
     onConnect(connection) {
-      unsubscribe = queryCache.subscribe(() => {
-        connection.send('queries', getSerializedQueries());
+      // send initial queries
+      connection.send('queries', getSerializedQueries());
+
+      // Subscribe to QueryCacheNotifyEvent and send updates only
+      unsubscribe = queryCache.subscribe(handleCacheEvent(connection));
+
+      connection.receive('queryRefetch', ({ queryHash }, responder) => {
+        getQueryByHash(queryHash)?.fetch();
+        responder.success({ ack: true });
       });
 
-      connection.receive('query:refetch', ({ queryHash }, responder) => {
-        getQueryByHash(queryHash)?.fetch();
-        responder.success({ack: true});
-      });
-      connection.receive('query:remove', ({ queryHash }, responder) => {
+      connection.receive('queryRemove', ({ queryHash }, responder) => {
         const query = getQueryByHash(queryHash);
         if (query) {
           queryClient.removeQueries(query.queryKey, { exact: true });
         }
-        responder.success({ack: true});
+        responder.success({ ack: true });
       });
-
-      // send initial queries
-      connection.send('queries', getSerializedQueries());
     },
     onDisconnect() {
       if (unsubscribe) {

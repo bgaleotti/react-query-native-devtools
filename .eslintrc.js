@@ -20,14 +20,13 @@ module.exports = {
     camelcase: 'off',
     'linebreak-style': ['error', 'unix'],
     'newline-before-return': 'error',
-    'no-console': 'error',
+    // FIXME: revert
+    'no-console': 'warn',
     'react/prop-types': 'off',
     'simple-import-sort/imports': 'error',
     'sort-imports': 'off',
     strict: ['error', 'global'],
     '@typescript-eslint/no-unused-vars': 'off',
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
   },
   settings: {
     'import/parsers': {
