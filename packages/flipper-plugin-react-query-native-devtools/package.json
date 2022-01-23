@@ -11,7 +11,6 @@
   "keywords": [
     "flipper-plugin"
   ],
-  "private": true,
   "repository": "https://github.com/bgaleotti/react-query-native-devtools/",
   "scripts": {
     "build": "true",
