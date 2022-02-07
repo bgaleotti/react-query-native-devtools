@@ -33,3 +33,16 @@ export function makeQuerySelectionKey(query: Query): string {
 
   return key;
 }
+
+function isStale(query: Query): boolean {
+  // TODO: support observers state
+  return query.state.isInvalidated || !query.state.dataUpdatedAt;
+}
+
+function isInactive(query: Query): boolean {
+  return getObserversCounter(query) === 0;
+}
+
+export function getQueryStatusLabel(query: Query): string {
+  return query.state.isFetching ? 'fetching' : isInactive(query) ? 'inactive' : isStale(query) ? 'stale' : 'fresh';
+}

@@ -10,12 +10,18 @@ import {
   PluginClient,
   usePlugin,
 } from 'flipper-plugin';
-import React from 'react';
+import * as React from 'react';
 import type { Query, QueryStatus } from 'react-query';
 
 import { QuerySidebar } from './components/QuerySidebar';
 import { QueryCacheNotifyEvent } from './types/queryCacheNotifyEvent';
-import { formatTimestamp, getObserversCounter, isQueryActive, makeQuerySelectionKey } from './utils';
+import {
+  formatTimestamp,
+  getObserversCounter,
+  getQueryStatusLabel,
+  isQueryActive,
+  makeQuerySelectionKey,
+} from './utils';
 
 type Events = {
   queries: { queries: string };
@@ -136,6 +142,9 @@ const columns: DataTableColumn<ExtendedQuery>[] = [
     title: 'Status',
     width: 80,
     visible: true,
+    onRender: (query) => {
+      return getQueryStatusLabel(query);
+    },
   },
   {
     key: 'dataUpdateCount',
