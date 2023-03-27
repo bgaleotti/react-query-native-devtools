@@ -35,8 +35,12 @@ export function makeQuerySelectionKey(query: Query): string {
 }
 
 function isStale(query: Query): boolean {
-  // TODO: support observers state
-  return query.state.isInvalidated || !query.state.dataUpdatedAt;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  /* @ts-ignore */
+  const hasStaleObserver = query.observers?.some((observer) => observer?.currentResult?.isStale);
+  const hasInvalidState = query.state.isInvalidated || !query.state.dataUpdatedAt;
+
+  return hasStaleObserver || hasInvalidState;
 }
 
 function isInactive(query: Query): boolean {
