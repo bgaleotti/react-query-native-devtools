@@ -19,13 +19,13 @@ export function formatTimestamp(timestamp: number): string {
 export function getObserversCounter(query: Query): number {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   /* @ts-ignore */
-  return query.observers.length;
+  return query.observers?.length ?? 0;
 }
 
 export function isQueryActive(query: Query): boolean {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   /* @ts-ignore */
-  return query.observers.some((observer) => observer.options.enabled !== false);
+  return query.observers?.some((observer) => observer.options.enabled !== false) ?? false;
 }
 
 export function makeQuerySelectionKey(query: Query): string {
